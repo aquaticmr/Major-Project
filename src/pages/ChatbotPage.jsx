@@ -8,8 +8,10 @@ import { SquarePen, ChevronDown, Lock, Sun, Moon, Settings, Menu } from 'lucide-
 import { GeminiAPI } from "../features/chatAI/GeminiAPI";
 import { BeatLoader } from "react-spinners";
 import PricingDialog from '../components/ui/PricingDialog'; // Import PricingDialog
+import { useAuth } from '@clerk/clerk-react';
 
 const ChatbotPage = () => {
+    const { isSignedIn } = useAuth();
     const [messages, setMessages] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef(null);
@@ -17,7 +19,6 @@ const ChatbotPage = () => {
     const [theme, setTheme] = useState('light');
     const [utilitiesOpen, setUtilitiesOpen] = useState(false);
     const [chats, setChats] = useState([]);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar visibility - initially closed on mobile
     const [isPricingDialogOpen, setIsPricingDialogOpen] = useState(false); // State for pricing dialog
     const [language, setLanguage] = useState('en-US'); // Added language state, default to English (India)
@@ -29,6 +30,8 @@ const ChatbotPage = () => {
 Do NOT answer questions about any other topics, including but not limited to: general knowledge, history, science, celebrities, coding, cooking, creative writing, or personal opinions unrelated to finance.
 
 If the user asks a question outside of your designated financial domain, you MUST respond with a polite refusal stating your specialization. For example: "I am a financial advisor bot and can only help with finance-related questions. Please ask something about finance, investing, or economics." or "My apologies, I specialize in financial topics. Could you ask a question related to finance?"
+
+CRITICAL INSTRUCTION: When discussing money, amounts, or financial examples, ALWAYS use Indian Rupees (₹) as the currency. Do not use US Dollars ($) or other currencies unless specifically asked by the user.
 
 Do not engage in casual conversation unrelated to finance. Stick strictly to your role as a financial advisor assistant.`;
 
@@ -52,7 +55,7 @@ Do not engage in casual conversation unrelated to finance. Stick strictly to you
     };
 
     useEffect(() => {
-        if (isLoggedIn) {
+        if (isSignedIn) {
             const storedChats = localStorage.getItem('fintech_chats');
             if (storedChats) {
                 setChats(JSON.parse(storedChats));
@@ -61,14 +64,14 @@ Do not engage in casual conversation unrelated to finance. Stick strictly to you
             setChats([]);
             localStorage.removeItem('fintech_chats');
         }
-    }, [isLoggedIn]);
+    }, [isSignedIn]);
 
 
     useEffect(() => {
-        if (isLoggedIn) {
+        if (isSignedIn) {
             localStorage.setItem('fintech_chats', JSON.stringify(chats));
         }
-    }, [chats, isLoggedIn]);
+    }, [chats, isSignedIn]);
 
 
     useEffect(scrollToBottom, [messages, isLoading]);
@@ -166,8 +169,7 @@ Do not engage in casual conversation unrelated to finance. Stick strictly to you
                     theme={theme}
                     chats={chats}
                     setChats={setChats}
-                    isLoggedIn={isLoggedIn}
-                    setIsLoggedIn={setIsLoggedIn}
+                    isLoggedIn={isSignedIn}
                     clearChatHistory={handleClearChatHistory}
                     openPricingDialog={openPricingDialog} // Pass openPricingDialog function
                     onMobileCloseSidebar={toggleSidebar} // Pass function to close sidebar from mobile

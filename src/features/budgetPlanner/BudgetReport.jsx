@@ -1,6 +1,5 @@
 // src/features/budgetPlanner/BudgetReport.jsx
 import React, { useRef } from 'react';
-import html2pdf from 'html2pdf.js'; // Import html2pdf library
 
 const BudgetReport = ({ report, loading, isInitialized, error, modelUsedForInit }) => {
   const reportRef = useRef(null); // Create a ref for the report content
@@ -69,30 +68,8 @@ const BudgetReport = ({ report, loading, isInitialized, error, modelUsedForInit 
   };
 
   const handleExportPdf = () => {
-    console.log("Export to PDF button clicked"); // Log when the button is clicked
-    const element = reportRef.current; // Get the DOM element from the ref
-
-    if (!element) {
-      console.error("Report element not found for PDF export. ref.current is:", reportRef.current); // More detailed error log
-      return;
-    }
-
-    const opt = {
-      margin:       10,
-      filename:     'budget-report.pdf',
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    console.log("html2pdf options:", opt); // Log the options being used
-
-    try {
-      html2pdf().from(element).set(opt).save();
-      console.log("PDF export initiated successfully."); // Log on successful initiation
-    } catch (error) {
-      console.error("PDF export failed:", error); // Log any errors during export
-    }
+    // Fallback to native print dialog which allows saving as PDF
+    window.print();
   };
 
 

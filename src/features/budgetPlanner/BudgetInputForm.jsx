@@ -105,18 +105,18 @@ const BudgetInputForm = ({
               onChange={handleLanguageChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             >
-              <option value="en-IN">English (India)</option>
-              <option value="hi-IN">Hindi (India)</option>
-              <option value="gu-IN">Gujarati (India)</option>
-              <option value="es">Spanish</option>
-              <option value="fr">French</option>
-              <option value="de">German</option>
-              <option value="zh">Chinese</option>
-              <option value="ja">Japanese</option>
-              <option value="ru">Russian</option>
-              <option value="ar">Arabic</option>
-              <option value="pt">Portuguese</option>
-              <option value="ko">Korean</option>
+              <option value="English">English</option>
+              <option value="Hindi">Hindi</option>
+              <option value="Gujarati">Gujarati</option>
+              <option value="Spanish">Spanish</option>
+              <option value="French">French</option>
+              <option value="German">German</option>
+              <option value="Chinese">Chinese</option>
+              <option value="Japanese">Japanese</option>
+              <option value="Russian">Russian</option>
+              <option value="Arabic">Arabic</option>
+              <option value="Portuguese">Portuguese</option>
+              <option value="Korean">Korean</option>
             </select>
           </div>
           {/* Error Display */}

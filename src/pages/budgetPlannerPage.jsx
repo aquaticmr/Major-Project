@@ -11,7 +11,7 @@ const BudgetPlannerPage = () => {
   const [monthlyIncome, setMonthlyIncome] = useState('');
   const [expenses, setExpenses] = useState('');
   const [goals, setGoals] = useState('');
-  const [language, setLanguage] = useState('en-IN'); // Default language is English (India)
+  const [language, setLanguage] = useState('English'); // Default language is English
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState('');
   const [error, setError] = useState('');

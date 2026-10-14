@@ -2,9 +2,11 @@
 import React from 'react';
 import { Plus, LogIn, GripHorizontal, Home, Trash2, BookOpen, GraduationCap, Rocket, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useClerk, UserButton } from '@clerk/clerk-react';
 
-const ChatSidebar = ({ setLevel, selectedLevel, theme, chats, setChats, isLoggedIn, setIsLoggedIn, openPricingDialog, onMobileCloseSidebar, language, setLanguage }) => { // Added language and setLanguage props
+const ChatSidebar = ({ setLevel, selectedLevel, theme, chats, setChats, isLoggedIn, openPricingDialog, onMobileCloseSidebar, language, setLanguage }) => { // Added language and setLanguage props
     const navigate = useNavigate();
+    const { signOut } = useClerk();
     const isDarkTheme = theme === 'dark';
 
     const handleNewChat = () => {
@@ -27,14 +29,18 @@ const ChatSidebar = ({ setLevel, selectedLevel, theme, chats, setChats, isLogged
     };
 
     const handleSignIn = () => {
-        navigate('/signin'); // Redirect to sign-in page
+        navigate('/sign-in'); // Redirect to sign-in page
         console.log("Navigating to sign-in page"); // For debugging and feedback
     };
 
-    const handleSignOut = () => {
-        setIsLoggedIn(false); // Example logout action
-        setChats([]); // Clear chats on sign out for this example - adjust as needed
-        console.log("User signed out"); // For debugging and feedback
+    const handleSignOut = async () => {
+        try {
+            await signOut();
+            setChats([]);
+            navigate('/');
+        } catch (error) {
+            console.error("User sign out error:", error);
+        }
     };
 
     const handleUpgradeClick = () => {
@@ -178,26 +184,30 @@ const ChatSidebar = ({ setLevel, selectedLevel, theme, chats, setChats, isLogged
                 </div>
             </div>
 
-            {/* Sign In/Out Button */}
-            {!isLoggedIn && (
+            {/* Sign In/Out Button & User Profile */}
+            {isLoggedIn ? (
+                <div className="px-4 mb-4 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 overflow-hidden">
+                        <UserButton afterSignOutUrl="/" />
+                        <span className={`text-xs font-medium truncate ${isDarkTheme ? 'text-gray-300' : 'text-gray-700'}`}>Account</span>
+                    </div>
+                    <button
+                        className={`flex items-center justify-center rounded-md px-2.5 py-1.5 text-xs font-medium cursor-pointer ${isDarkTheme ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                        onClick={handleSignOut}
+                        title="Sign out"
+                    >
+                        <LogIn size={14} className="mr-1.5 rotate-180" />
+                        Sign out
+                    </button>
+                </div>
+            ) : (
                 <div className="px-4 mb-4">
                     <button
-                        className={`flex w-full items-center justify-center rounded-md px-3 py-2 text-sm font-medium ${isDarkTheme ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                        className={`flex w-full items-center justify-center rounded-md px-3 py-2 text-sm font-medium cursor-pointer ${isDarkTheme ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                         onClick={handleSignIn}
                     >
                         <LogIn size={16} className="mr-2" />
                         Sign in
-                    </button>
-                </div>
-            )}
-            {isLoggedIn && (
-                <div className="px-4 mb-4">
-                    <button
-                        className={`flex w-full items-center justify-center rounded-md px-3 py-2 text-sm font-medium ${isDarkTheme ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                        onClick={handleSignOut}
-                    >
-                        <LogIn size={16} className="mr-2 rotate-180" />
-                        Sign out
                     </button>
                 </div>
             )}
